@@ -79,8 +79,9 @@ if file_upload:
                # last_dt = df_instituicao.sort_index().iloc[-1]  
           st.bar_chart(df_instituicao.loc[date])
 
-     df_stats = calc_general_stats(df)
+     exp3 = st.expander("Estatísticas Gerais")
 
+     df_stats = calc_general_stats(df)
      columns_config = {
           "Valor": st.column_config.NumberColumn("Valor", format = "R$ %.2f"),
           "Diferença Mensal Abs.": st.column_config.NumberColumn("Diferença Mensal Abs.", format = "R$ %.2f"),
@@ -96,6 +97,27 @@ if file_upload:
           "Evolução 24M Relativa": st.column_config.NumberColumn("Evolução 24M Relativa", format = "percent")
      }
 
-     st.dataframe(df_stats, column_config = columns_config )
+     tab_stats, tab_abs, tab_rel = exp3.tabs(tabs = ["Dados", "Histórico de Evolução", "Crescimento Relativo"])
+
+     with tab_stats:
+          st.dataframe(df_stats, column_config = columns_config )
+
+     with tab_abs:
+          abs_cols = [
+               "Diferença Mensal Abs.",
+               "Média 6M Diferença Mensal Abs.",
+               "Média 12M Diferença Mensal Abs.",
+               "Média 24M Diferença Mensal Abs."
+          ]
+          st.line_chart(df_stats[abs_cols])
+
+     with tab_rel:
+          rel_cols = [
+               "Diferença Mensal Rel.",
+               "Evolução 6M Relativa",
+               "Evolução 12M Relativa",
+               "Evolução 24M Relativa"
+          ]
+          st.line_chart(df_stats[rel_cols    ])
 
 # Não tem arquivos...
